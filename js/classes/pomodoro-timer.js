@@ -208,4 +208,8 @@ PomodoroTimer.prototype.resume = function() {
 
 PomodoroTimer.prototype.next = function() {
     this.setupNextRound();
-}
+
+    // Do a pause and resume to stimulate updating the display and start the new timer immediately
+    this.internalPause();
+    this.resume();
+};

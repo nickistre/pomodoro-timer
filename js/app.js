@@ -1,36 +1,3 @@
-function splitTimer(timer) {
-    return {
-        minutes: parseInt(timer / 60, 10),
-        seconds: parseInt(timer % 60, 10)
-    };
-}
-
-/**
- *
- * @param number
- * @param size
- * @returns {string}
- * {@link https://stackoverflow.com/a/2998822/1946899|Modifed from Source}
- */
-function zeroPad(number, size) {
-    var s=number+'';
-    while (s.length < size) {
-        s = '0' + s;
-    }
-
-    return s;
-}
-
-/**
- *
- * @param string
- * @returns {string}
- * {@link https://stackoverflow.com/a/1026087/1946899|Source}
- */
-function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
 function poll(currentStatus) {
     console.log(currentStatus);
 
@@ -59,13 +26,26 @@ function poll(currentStatus) {
     }
 
     // Setup next button and effects
-    if (currentStatus.canStartNextRound) {
-        // Enable next button
-        jQuery('#next-round-btn').prop('disabled', false);
+    if (currentStatus.mode == PomodoroTimer.MODE_REST) {
+        jQuery('#next-round-btn').show();
+        if (!currentStatus.canStartNextRound) {
+            // Enable next button
+            jQuery('#next-round-btn').prop('disabled', true);
+            if (currentStatus.minRestTimer !== null) {
+                var nextTimerSplit = splitTimer(currentStatus.totalMinRestSeconds);
+                jQuery('#next-round-btn').html('Rest for at least: ' + zeroPad(nextTimerSplit.minutes, 2)+':'+zeroPad(nextTimerSplit.seconds, 2));
+            }
+
+        }
+        else {
+            jQuery('#next-round-btn').prop('disabled', false);
+            jQuery('#next-round-btn').html('Start Next Round');
+        }
     }
     else {
-        jQuery('#next-round-btn').prop('disabled', true);
+        jQuery('#next-round-btn').hide();
     }
+
 }
 
 var pomodoroTimer = new PomodoroTimer(poll);
