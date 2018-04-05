@@ -8,9 +8,38 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+
+    <!-- Application CSS -->
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<h1>Hello, world!</h1>
+<div id="timer-container" class="container">
+    <div class="col-md-6 offset-md-3">
+        <div class="row text-center">
+            <div class="col-md-6">
+                <div id="main-timer" class="timer-display">
+                    <span class="minutes"></span>
+                    :
+                    <span class="seconds"></span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div id="mode-display">
+
+                </div>
+            </div>
+            <div class="col-md-3">
+                <button id="next-round-btn">Next Round</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 text-center">
+                <button id="control-btn">Start</button>
+                <button id="reset-btn">Reset</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->

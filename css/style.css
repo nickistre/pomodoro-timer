@@ -1,0 +1,9 @@
+@font-face{
+    font-family:'digital-clock-font';
+    src: url('../fonts/digital-dream/DIGITALDREAMFATNARROW.ttf');
+}
+
+.timer-display {
+    font-family: 'digital-clock-font', monospace;
+    font-size: 120%;
+}
