@@ -186,7 +186,7 @@ PomodoroTimer.prototype.resume = function() {
 
             // If in rest mode, check for if we can start the next round once restMinTime was reached.
             // Check if timer is less than the difference between restMaxTime and restMinTime
-            self.canStartNextRound = self.mode === PomodoroTimer.MODE_REST && self.timer <= (self.restMaxTime - self.restMinTime);
+            self.canStartNextRound = self.mode === PomodoroTimer.MODE_REST && self.timer <= self.restMinTime;
 
             // Calculate min rest times
             if (self.mode === PomodoroTimer.MODE_REST) {

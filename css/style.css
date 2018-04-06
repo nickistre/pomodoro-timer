@@ -3,6 +3,11 @@
     src: url('../fonts/digital-dream/DIGITALDREAMFATNARROW.ttf');
 }
 
+.section {
+    border: gray 1px solid;
+    padding: 10px 10px;
+}
+
 .timer-display {
     font-family: 'digital-clock-font', monospace;
     font-size: 120%;
@@ -10,4 +15,22 @@
 
 #add-todo-field {
     width: 100%;
+}
+
+.todo-list {
+    margin-bottom: 8px;
+}
+
+.list-item {
+    margin-top: 4px;
+    margin-bottom: 4px;
+    margin-left: 6px;
+}
+
+.list-item input[type="checkbox"] {
+    vertical-align: text-bottom;
+}
+
+.list-item label {
+    margin-bottom: 0;
 }

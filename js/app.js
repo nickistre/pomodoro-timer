@@ -52,21 +52,21 @@ var pomodoroTimer = new PomodoroTimer(refreshTimer);
 
 // Debug timer system with alternate timings
 pomodoroTimer.setTimerPatterns([
-    {
-        workTime: 10,
-        restMinTime: 5,
-        restMaxTime: 10
-    },
-    {
-        workTime: 10,
-        restMinTime: 5,
-        restMaxTime: 10
-    },
-    {
-        workTime: 10,
-        restMinTime: 5,
-        restMaxTime: 10
-    },
+    // {
+    //     workTime: 10,
+    //     restMinTime: 5,
+    //     restMaxTime: 10
+    // },
+    // {
+    //     workTime: 10,
+    //     restMinTime: 5,
+    //     restMaxTime: 10
+    // },
+    // {
+    //     workTime: 10,
+    //     restMinTime: 5,
+    //     restMaxTime: 10
+    // },
     {
         workTime: 10,
         restMinTime: 20,
@@ -85,9 +85,26 @@ function refreshTodo(currentList) {
     for (var todoIndex in currentList.todo) {
         var todo = currentList.todo[todoIndex];
 
-        var todoHtml = "<div class='list-item'><input type='checkbox' data-id='"+todo.index+"'><span>"+escapeHtml(todo.item.text)+"</span></div>";
+        var todoId = 'list-item-'+todo.index;
+
+        var todoHtml = "<div class='list-item'><input id='"+todoId+"' class='list-item-chkbox' type='checkbox' data-id='"+todo.index+"'><label for='"+todoId+"'>"+escapeHtml(todo.item.text)+"</label></div>";
 
         $todoSection.append(todoHtml);
+    }
+
+    // Update complete section
+    var $completeSection = jQuery('#list-complete');
+
+    $completeSection.html('');
+
+    for (var completeIndex in currentList.completed) {
+        var complete = currentList.completed[completeIndex];
+
+        var completeId = 'list-item-'+complete.index;
+
+        var completeHtml = "<div class='list-item'><input id='"+completeId+"' class='list-item-chkbox' type='checkbox' data-id='"+complete.index+"' checked='checked'><label for='"+completeId+"'>"+escapeHtml(complete.item.text)+"</label></div>";
+
+        $completeSection.append(completeHtml);
     }
 }
 
@@ -128,5 +145,14 @@ jQuery(function() {
             }
             $addTodoField.val('');
         }
+    });
+
+    jQuery('.todo-list').on('change', '.list-item-chkbox', {}, function(e) {
+        console.log(e);
+
+        var complete = e.currentTarget.checked;
+        var index = parseInt(jQuery(e.currentTarget).data('id'));
+
+        todoList.markComplete(index, complete);
     })
 });
