@@ -13,6 +13,9 @@ Todo.WrappedItem = function(index, item) {
 Todo.List = function(updateCallback) {
     this.list = [];
     this.updateCallback = updateCallback;
+
+    // Do an intiial runUpdate
+    this.runUpdateCallback();
 };
 
 // Internal methods

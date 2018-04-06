@@ -51,28 +51,28 @@ function refreshTimer(currentStatus) {
 var pomodoroTimer = new PomodoroTimer(refreshTimer);
 
 // Debug timer system with alternate timings
-pomodoroTimer.setTimerPatterns([
-    // {
-    //     workTime: 10,
-    //     restMinTime: 5,
-    //     restMaxTime: 10
-    // },
-    // {
-    //     workTime: 10,
-    //     restMinTime: 5,
-    //     restMaxTime: 10
-    // },
-    // {
-    //     workTime: 10,
-    //     restMinTime: 5,
-    //     restMaxTime: 10
-    // },
-    {
-        workTime: 10,
-        restMinTime: 20,
-        restMaxTime: 30
-    }
-]);
+// pomodoroTimer.setTimerPatterns([
+//     {
+//         workTime: 10,
+//         restMinTime: 5,
+//         restMaxTime: 10
+//     },
+//     {
+//         workTime: 10,
+//         restMinTime: 5,
+//         restMaxTime: 10
+//     },
+//     {
+//         workTime: 10,
+//         restMinTime: 5,
+//         restMaxTime: 10
+//     },
+//     {
+//         workTime: 10,
+//         restMinTime: 20,
+//         restMaxTime: 30
+//     }
+// ]);
 
 function refreshTodo(currentList) {
     console.log(currentList);
@@ -82,14 +82,19 @@ function refreshTodo(currentList) {
 
     $todoSection.html('');
 
-    for (var todoIndex in currentList.todo) {
-        var todo = currentList.todo[todoIndex];
+    if (currentList.todo.length > 0) {
+        for (var todoIndex in currentList.todo) {
+            var todo = currentList.todo[todoIndex];
 
-        var todoId = 'list-item-'+todo.index;
+            var todoId = 'list-item-' + todo.index;
 
-        var todoHtml = "<div class='list-item'><input id='"+todoId+"' class='list-item-chkbox' type='checkbox' data-id='"+todo.index+"'><label for='"+todoId+"'>"+escapeHtml(todo.item.text)+"</label></div>";
+            var todoHtml = "<div class='list-item'><input id='" + todoId + "' class='list-item-chkbox' type='checkbox' data-id='" + todo.index + "'><label for='" + todoId + "'>" + escapeHtml(todo.item.text) + "</label></div>";
 
-        $todoSection.append(todoHtml);
+            $todoSection.append(todoHtml);
+        }
+    }
+    else {
+        $todoSection.html('<small><em>No todo tasks!  Fill in your first task in the text field above</em></small>');
     }
 
     // Update complete section
@@ -97,14 +102,19 @@ function refreshTodo(currentList) {
 
     $completeSection.html('');
 
-    for (var completeIndex in currentList.completed) {
-        var complete = currentList.completed[completeIndex];
+    if (currentList.completed.length > 0) {
+        for (var completeIndex in currentList.completed) {
+            var complete = currentList.completed[completeIndex];
 
-        var completeId = 'list-item-'+complete.index;
+            var completeId = 'list-item-' + complete.index;
 
-        var completeHtml = "<div class='list-item'><input id='"+completeId+"' class='list-item-chkbox' type='checkbox' data-id='"+complete.index+"' checked='checked'><label for='"+completeId+"'>"+escapeHtml(complete.item.text)+"</label></div>";
+            var completeHtml = "<div class='list-item'><input id='" + completeId + "' class='list-item-chkbox' type='checkbox' data-id='" + complete.index + "' checked='checked'><label for='" + completeId + "'>" + escapeHtml(complete.item.text) + "</label></div>";
 
-        $completeSection.append(completeHtml);
+            $completeSection.append(completeHtml);
+        }
+    }
+    else {
+        $completeSection.html('<small><em>No completed tasks!  Tasks will be moved here as they are checked off above</em></small>');
     }
 }
 
