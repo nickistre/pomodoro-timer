@@ -49,3 +49,14 @@ function escapeHtml(unsafe) {
         .replace(/'/g, "&#039;");
 }
 
+function showAlert(html, color, timeOut) {
+    // Close existing alerts
+    jQuery('div.alert').alert('close');
+
+    jQuery('body').prepend('<div class="alert alert-'+color+' alert-dismissible show" role="alert">\n' +
+        html+'\n' +
+        '  <button type="button" class="close" data-dismiss="alert" aria-label="Close">\n' +
+        '    <span aria-hidden="true">&times;</span>\n' +
+        '  </button>\n' +
+        '</div>');
+}

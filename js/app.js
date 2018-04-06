@@ -1,15 +1,21 @@
+// Set this to true to use a shortened timer pattern
+var debugMode = true;
+
 function refreshTimer(currentStatus) {
     console.log(currentStatus);
 
-    if (currentStatus.status == PomodoroTimer.STATUS_PAUSED) {
-        jQuery('#control-btn').html('Start');
-        jQuery('#timer-container').removeClass('running');
-        jQuery('#timer-container').addClass('paused');
+    var $controlBtn = jQuery('#control-btn');
+    var $timerContainer = jQuery('#timer-container');
+
+    if (currentStatus.status === PomodoroTimer.STATUS_PAUSED) {
+        $controlBtn.html('Start');
+        $timerContainer.removeClass('running');
+        $timerContainer.addClass('paused');
     }
     else {
-        jQuery('#control-btn').html('Pause');
-        jQuery('#timer-container').removeClass('paused');
-        jQuery('#timer-container').addClass('running');
+        $controlBtn.html('Pause');
+        $timerContainer.removeClass('paused');
+        $timerContainer.addClass('running');
     }
 
     // Update main timer display
@@ -18,61 +24,65 @@ function refreshTimer(currentStatus) {
     jQuery('#main-timer .seconds').html(zeroPad(timerSplit.seconds, 2));
 
     // Show mode
-    if (currentStatus.status == PomodoroTimer.STATUS_PAUSED) {
-        jQuery('#mode-display').html('<em>Timer Paused</em>')
-    }
-    else {
-        jQuery('#mode-display').html(capitalizeFirstLetter(currentStatus.modeString));
-    }
+    jQuery('#mode-display').html('<strong>Mode: </strong>' + capitalizeFirstLetter(currentStatus.modeString));
+
+
 
     // Setup next button and effects
-    if (currentStatus.mode == PomodoroTimer.MODE_REST) {
-        jQuery('#next-round-btn').show();
-        if (!currentStatus.canStartNextRound) {
-            // Enable next button
-            jQuery('#next-round-btn').prop('disabled', true);
-            if (currentStatus.minRestTimer !== null) {
-                var nextTimerSplit = splitTimer(currentStatus.totalMinRestSeconds);
-                jQuery('#next-round-btn').html('Rest for at least: ' + zeroPad(nextTimerSplit.minutes, 2)+':'+zeroPad(nextTimerSplit.seconds, 2));
-            }
-
-        }
-        else {
-            jQuery('#next-round-btn').prop('disabled', false);
-            jQuery('#next-round-btn').html('Start Next Round');
-        }
+    var $nextRoundBtn = jQuery('#next-round-btn');
+    if (currentStatus.status === PomodoroTimer.STATUS_PAUSED) {
+        jQuery('#status').html('<em>Timer Paused</em>');
+        $nextRoundBtn.hide();
     }
     else {
-        jQuery('#next-round-btn').hide();
+        jQuery('#status').html('');
+        if (currentStatus.mode === PomodoroTimer.MODE_REST) {
+            $nextRoundBtn.show();
+            if (!currentStatus.canStartNextRound) {
+                // Enable next button
+                $nextRoundBtn.prop('disabled', true);
+                if (currentStatus.minRestTimer !== null) {
+                    var nextTimerSplit = splitTimer(currentStatus.totalMinRestSeconds);
+                    $nextRoundBtn.html('Rest for at least: ' + zeroPad(nextTimerSplit.minutes, 2)+':'+zeroPad(nextTimerSplit.seconds, 2));
+                }
+
+            }
+            else {
+                $nextRoundBtn.prop('disabled', false);
+                $nextRoundBtn.html('Start Next Round Now');
+            }
+        }
+        else {
+            $nextRoundBtn.hide();
+        }
     }
+
+
+    // Display round count
+    jQuery('#round-count').html(currentStatus.roundCount);
+
+    // Show some alerts if the mode changed
+    if (currentStatus.status) {
+        if (currentStatus.mode !== refreshTimer.oldMode) {
+            if (currentStatus.mode === PomodoroTimer.MODE_REST) {
+                showAlert('<strong>Take a break!</strong> Get up, walk around, get some coffee, and rest up for the next round.', 'danger');
+            }
+            else if (currentStatus.mode === PomodoroTimer.MODE_WORK) {
+                showAlert('<strong>Continue Working!</strong> Keep knocking out those tasks!', 'success');
+            }
+        }
+    }
+
+    refreshTimer.oldStatus = currentStatus.status;
+    refreshTimer.oldMode = currentStatus.mode;
 
 }
 
-var pomodoroTimer = new PomodoroTimer(refreshTimer);
+// Setup some static variables on the refreshTimer call
+refreshTimer.oldMode = null;
+refreshTimer.oldStatus = null;
 
-// Debug timer system with alternate timings
-// pomodoroTimer.setTimerPatterns([
-//     {
-//         workTime: 10,
-//         restMinTime: 5,
-//         restMaxTime: 10
-//     },
-//     {
-//         workTime: 10,
-//         restMinTime: 5,
-//         restMaxTime: 10
-//     },
-//     {
-//         workTime: 10,
-//         restMinTime: 5,
-//         restMaxTime: 10
-//     },
-//     {
-//         workTime: 10,
-//         restMinTime: 20,
-//         restMaxTime: 30
-//     }
-// ]);
+var pomodoroTimer = new PomodoroTimer(refreshTimer);
 
 function refreshTodo(currentList) {
     console.log(currentList);
@@ -94,7 +104,7 @@ function refreshTodo(currentList) {
         }
     }
     else {
-        $todoSection.html('<small><em>No todo tasks!  Fill in your first task in the text field above</em></small>');
+        $todoSection.html('<small><em>No todo tasks!  Create a task with the text field above</em></small>');
     }
 
     // Update complete section
@@ -123,18 +133,53 @@ var todoList = new Todo.List(refreshTodo);
 // Will just use basic jQuery
 
 jQuery(function() {
+    // Debug timer system with alternate timings
+    if (debugMode) {
+        pomodoroTimer.setTimerPatterns([
+            {
+                workTime: 10,
+                restMinTime: 5,
+                restMaxTime: 10
+            },
+            {
+                workTime: 10,
+                restMinTime: 5,
+                restMaxTime: 10
+            },
+            {
+                workTime: 10,
+                restMinTime: 5,
+                restMaxTime: 10
+            },
+            {
+                workTime: 10,
+                restMinTime: 20,
+                restMaxTime: 30
+            }
+        ]);
+    }
 
     jQuery('#control-btn').click(function() {
         if (pomodoroTimer.getStatus() == PomodoroTimer.STATUS_PAUSED) {
             pomodoroTimer.resume();
+
+            // Show alert depending on mode
+            if (pomodoroTimer.getMode() === PomodoroTimer.MODE_WORK) {
+                showAlert('<strong>Start Working!</strong> Create some tasks and knock them out!', 'success');
+            }
+            else {
+                showAlert('<strong>Take a break!</strong> Get up, walk around, get some coffee, and rest up for the next round.', 'danger');
+            }
         }
         else {
             pomodoroTimer.pause();
+            showAlert('<strong>Timer Paused!</strong> Click on the Start button to resume the timer.', 'info');
         }
     });
 
     jQuery('#reset-btn').click(function() {
         pomodoroTimer.reset();
+        showAlert('<strong>Timer Reset!</strong> Click on the Start button to start the timer.', 'info');
     });
 
     jQuery('#next-round-btn').click(function () {
@@ -165,4 +210,7 @@ jQuery(function() {
 
         todoList.markComplete(index, complete);
     })
+
+    // Setup initial alert
+    showAlert('<strong>Welcome!</strong> Create some initial todo tasks and click on the Start button to start the timer.', 'primary');
 });
