@@ -1,4 +1,4 @@
-function poll(currentStatus) {
+function refreshTimer(currentStatus) {
     console.log(currentStatus);
 
     if (currentStatus.status == PomodoroTimer.STATUS_PAUSED) {
@@ -48,7 +48,7 @@ function poll(currentStatus) {
 
 }
 
-var pomodoroTimer = new PomodoroTimer(poll);
+var pomodoroTimer = new PomodoroTimer(refreshTimer);
 
 // Debug timer system with alternate timings
 pomodoroTimer.setTimerPatterns([
@@ -74,6 +74,25 @@ pomodoroTimer.setTimerPatterns([
     }
 ]);
 
+function refreshTodo(currentList) {
+    console.log(currentList);
+
+    // Update todo section
+    var $todoSection = jQuery('#list-todo');
+
+    $todoSection.html('');
+
+    for (var todoIndex in currentList.todo) {
+        var todo = currentList.todo[todoIndex];
+
+        var todoHtml = "<div class='list-item'><input type='checkbox' data-id='"+todo.index+"'><span>"+escapeHtml(todo.item.text)+"</span></div>";
+
+        $todoSection.append(todoHtml);
+    }
+}
+
+var todoList = new Todo.List(refreshTodo);
+
 // Will just use basic jQuery
 
 jQuery(function() {
@@ -93,5 +112,21 @@ jQuery(function() {
 
     jQuery('#next-round-btn').click(function () {
         pomodoroTimer.next();
+    });
+
+
+    /**
+     * {@link https://stackoverflow.com/a/12518467/1946899|Modified from Source}
+     */
+    jQuery('#add-todo-field').keypress(function(e) {
+        if (e.which == 13) {
+            var $addTodoField = jQuery('#add-todo-field');
+            var newTodo = $addTodoField.val();
+
+            if (newTodo) {
+                todoList.add(newTodo);
+            }
+            $addTodoField.val('');
+        }
     })
 });
