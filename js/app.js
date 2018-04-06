@@ -1,5 +1,5 @@
 // Set this to true to use a shortened timer pattern
-var debugMode = true;
+var debugMode = false;
 
 function refreshTimer(currentStatus) {
     console.log(currentStatus);
