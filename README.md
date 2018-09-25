@@ -11,3 +11,5 @@ docker-compose up
 ``` 
 
 Open <http://localhost:8080> in a browser to try it out.
+
+Alternately is hosted here on Github Pages: https://nickistre.github.io/pomodoro-timer/
